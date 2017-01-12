@@ -12,10 +12,10 @@
     $dbname = "NBA1516";
     $user = "info344user";
     $pass = "<password>";
-    $name = '\'Stephen Curry\'';
+    $searchStr = strtoupper('\'%' . $_POST["playerSearch"] . '%\'');
     try {
     	$conn = new PDO("mysql:host={$host};port={$port};dbname={$dbname}", $user, $pass);
-    	$stmt = $conn->prepare("SELECT * FROM Players WHERE Name = {$name}");
+    	$stmt = $conn->prepare("SELECT * FROM Players WHERE upper(Name) LIKE {$searchStr}");
     	$stmt->execute();
 
     	$result = $stmt->fetchAll();
