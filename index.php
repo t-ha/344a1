@@ -25,7 +25,6 @@
         $pass = "<password>";
         $dbUser = new User($user, $pass);
 
-
         $searchStr = strtoupper('\'%' . $_POST["playerSearch"] . '%\'');
         try {
         	$conn = new PDO("mysql:host=" . $db->getHost() . ";port=" . $db->getPort() . ";dbname=" . $db->getDBName(), $dbUser->getUsername(), $dbUser->getPassword());
@@ -34,16 +33,11 @@
 
         	$result = $stmt->fetchAll();
         	if(count($result)) {
-        		$cols = $conn->prepare("DESCRIBE Players");
-        		$cols->execute();
-        		$colHeaders = $cols->fetchAll(PDO::FETCH_COLUMN);
     ?>
     <table style="width:100%">
     <tr>
     <?php
-                for($i = 0; $i < count($colHeaders); $i++) {
-                        echo("<th>" . $colHeaders[$i] . "</th>");
-                    }
+            printDBHead($conn);
     ?>
     </tr>
     <?php
