@@ -18,7 +18,8 @@
     if(isset($_POST["playerSearch"])) {
         $host = "ha344.c4zq7nel7nn5.us-west-2.rds.amazonaws.com";
         $port = "3306";
-        $dbname = "NBA1516";
+        $dbName = "NBA1516";
+        $db = new Database($host, $port, $dbName);
 
         $user = "info344user";
         $pass = "<password>";
@@ -27,7 +28,7 @@
 
         $searchStr = strtoupper('\'%' . $_POST["playerSearch"] . '%\'');
         try {
-        	$conn = new PDO("mysql:host={$host};port={$port};dbname={$dbname}", $dbUser->getUsername(), $dbUser->getPassword());
+        	$conn = new PDO("mysql:host=" . $db->getHost() . ";port=" . $db->getPort() . ";dbname=" . $db->getDBName(), $dbUser->getUsername(), $dbUser->getPassword());
         	$stmt = $conn->prepare("SELECT * FROM Players WHERE upper(Name) LIKE {$searchStr}");
         	$stmt->execute();
 
