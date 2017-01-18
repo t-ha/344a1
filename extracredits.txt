@@ -1,0 +1,6 @@
+Embedded photos of players
+For the player photos I used an API from
+https://nba-players.herokuapp.com
+and requested images by name.
+Some players either didn’t have photos or had unconventional spellings of names
+so their photos do not appear on the site.

@@ -1,21 +1,37 @@
 table {
-	border: solid black 1px;
 	text-align: center;
 	border-collapse: collapse;
+	width: 100%;
+}
+div {
+	margin: auto;
+	text-align: center;
 }
 
-tr{
-	border: solid black 1px;
-}
 
 tr:nth-child(even) {
-	background: #ecf0f1;
+	color: #1F3A93;
+	background: white;
 }
 tr:nth-child(odd) {
-	background: #FFFFFF;
+	color: #1F3A93;
+	background: rgba(31, 58, 147, 0.05);
 }
 
 body {
-	background: #ecf0f1;
+	background: white;
 	font-family: Helvetica, sans-serif;
+}
+
+#tblHead {
+	background: rgba(31, 58, 147, 1);
+	color: white;
+}
+
+#beforeSearch {
+	margin: auto;
+}
+
+form {
+	margin: 5px;
 }

@@ -6,67 +6,54 @@
   </head>
 
   <body>
+    <!-- search form -->
     <form action="" method="post">
-        Search Player: 
-        <input type="search" name="playerSearch">
-        <input type="submit" value="Search">
+        Search Player:
+        <input type="search" name="playerSearch" id="searchbar">
+        <input type="submit" value="Search" id="search">
     </form>
-    
     <?php
     require "classLib.php";
 
+    // if user has searched continue
     if(isset($_POST["playerSearch"])) {
-        $host = "ha344.c4zq7nel7nn5.us-west-2.rds.amazonaws.com";
-        $port = "3306";
-        $dbName = "NBA1516";
-        $db = new Database($host, $port, $dbName);
-
-        $user = "info344user";
-        $pass = "<password>";
-        $dbUser = new User($user, $pass);
-
-        $searchStr = strtoupper('\'%' . $_POST["playerSearch"] . '%\'');
+        // create instance of Database
+        $db = new Database("ha344.c4zq7nel7nn5.us-west-2.rds.amazonaws.com", "3306", "NBA1516");
+        // create instance of User
+        $dbUser = new User("info344user", "<password>");
         try {
+            //try to connect to database
         	$conn = new PDO("mysql:host=" . $db->getHost() . ";port=" . $db->getPort() . ";dbname=" . $db->getDBName(), $dbUser->getUsername(), $dbUser->getPassword());
-        	$stmt = $conn->prepare("SELECT * FROM Players WHERE upper(Name) LIKE {$searchStr}");
+            // prep query string
+            $searchStr = getSearchStrings($_POST["playerSearch"]);
+            // query the database
+        	$stmt = $conn->prepare("SELECT * FROM Players WHERE (upper(Name) LIKE {$searchStr[0]} OR upper(Name) LIKE {$searchStr[1]})");
         	$stmt->execute();
 
         	$result = $stmt->fetchAll();
+
+            // if 1 or more players matched the search, continue to display their stats
         	if(count($result)) {
-    ?>
-    <table style="width:100%">
-    <tr>
-    <?php
-            printDBHead($conn);
-    ?>
-    </tr>
-    <?php
-        		foreach($result as $row) {
-                    echo "<tr>";
-                    for($i = 0; $i < count($row) / 2; $i++) {
-                        echo("<td><br/>");
-                        if ($i == 0) {
-                            $pName = explode(" ", $row[$i]);
-                            $headURL = '"https://nba-players.herokuapp.com/players/' . $pName[1] . '/' . $pName[0] . '"';
-                            echo('<img src=');
-                            echo($headURL);
-                            echo('alt="');
-                            echo($row[$i]);
-                            echo('" width="175" height="127">');
-                        }
-                        echo("<br/>" . $row[$i]);
-                        echo("<br/></td>");
-                    }
-                    echo "</tr>";
-        		}
-        	} else {
-        		echo "No rows returned.";
-        	}
-        } catch(PDOException $e) {
-        	echo 'ERROR: ' . $e->getMessage();
+                echo("<div><table><tr>");
+                showDBHead($conn);
+                echo("</tr>");
+                showPlayerInfo($result);
+            	} else {
+            		echo "No rows returned.";
+            	}
+            } catch(PDOException $e) {
+            	echo 'ERROR: ' . $e->getMessage();
+            }
+        } else {
+            ?>
+            <div id="beforeSearch">
+                <p>NBA Player Stats Page!</p>
+                <p>Search for your favorite players of the 2015-16 season.</p>
+            </div>
+            <?php
         }
-    }
-    ?>
-    </table>
+        ?>
+        </table>
+    </div>
   </body>
 </html>
